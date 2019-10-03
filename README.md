@@ -13,7 +13,7 @@ The build process has been tested with Ubuntu 18.04. On Ubuntu 18.04 you must in
 
 `sudo apt install git make gcc g++ python genext2fs u-boot-tools libncurses-dev`
 
-You need at least 30 GB free memory space.
+You need at least 30 GB free disk space.
 
 ## Build
 Clone this repository and type `make` in the root of the repository.
