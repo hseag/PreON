@@ -1,0 +1,56 @@
+#!/bin/sh
+
+export PATH=/env/bin
+echo "Start Preon"
+
+mtdparts="4M(nand0.barebox),512k(nand0.barebox-environment),8M(nand0.kernel),128k(nand0.oftree),100M(nand0.device),-(nand0.root)"
+kernelname="gpmi-nand"
+mtdparts-add -b -d nand0 -k ${kernelname} -p ${mtdparts}
+
+global linux.bootargs.console="console=ttymxc1,115200n8"
+global linux.bootargs.base="enable_wait_mode=off vt.global_cursor_default=0 consoleblank=0 imxdrm.legacyfb_depth=32"
+global linux.bootargs.root="root=/dev/ram0"
+
+echo
+echo -n "Hit any key to stop autoboot: "
+timeout -a 3
+if [ $? != 0 ]; then
+  echo "autobooting aborted"
+  exit
+fi
+
+echo "Scan USB ..."
+usb
+
+if [ -e /dev/disk0.0 ]
+then
+  tomount=/dev/disk0.0
+elif [ -e /dev/disk0 ]
+then
+  tomount=/dev/disk0
+else
+  tomount=
+fi
+
+if [ -n "$tomount" ]
+then
+  echo "USB Stick found"
+  mkdir -p /mnt/usb
+  mount $tomount /mnt/usb
+  if [ -e /mnt/usb/preon.sh ]
+  then
+    echo "Execute preon.sh"
+    /mnt/usb/preon.sh
+  else
+    if  [ -e /mnt/usb/preon1.bin -a -e /mnt/usb/preon2.bin ]
+    then
+      echo "Start linux with ramdisk"
+      bootm -r /mnt/usb/preon2.bin -o /dev/nand0.oftree.bb /mnt/usb/preon1.bin
+    fi
+  fi
+fi
+
+echo "Boot the default system"
+global linux.bootargs.root="root=ubi0:root ubi.mtd=nand0.root rootfstype=ubifs"
+bootm -L 0x11008000 -o /dev/nand0.oftree.bb /dev/nand0.kernel.bb 
+

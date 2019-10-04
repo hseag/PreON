@@ -1,0 +1,37 @@
+diff -Naur linux-3.19.4/drivers/video/console/fbcon.c linux-3.19.4-mod/drivers/video/console/fbcon.c
+--- linux-3.19.4/drivers/video/console/fbcon.c	2015-04-13 14:04:12.000000000 +0200
++++ linux-3.19.4-mod/drivers/video/console/fbcon.c	2015-11-20 08:18:09.581159116 +0100
+@@ -54,6 +54,8 @@
+  *  This file is subject to the terms and conditions of the GNU General Public
+  *  License.  See the file COPYING in the main directory of this archive for
+  *  more details.
++ *  Changelog:
++ *  Alessandro Ceccato (HSE AG) (06/2018) Show a fullscreen HSE AG logo.
+  */
+ 
+ #undef FBCONDEBUG
+@@ -2282,6 +2284,8 @@
+ 	fbcon_set_palette(vc, color_table); 	
+ 	fbcon_clear_margins(vc, 0);
+ 
++
++
+ 	if (logo_shown == FBCON_LOGO_DRAW) {
+ 
+ 		logo_shown = fg_console;
+@@ -2293,6 +2297,14 @@
+ 						 vc->vc_top) / 2);
+ 		return 0;
+ 	}
++	else if (logo_shown == FBCON_LOGO_CANSHOW) {
++		/*
++		  Show the logo always.
++		*/
++    fb_prepare_logo(info, 0);
++    fb_show_logo(info, 0);
++    return 0;
++	}
+ 	return 1;
+ }
+ 
+

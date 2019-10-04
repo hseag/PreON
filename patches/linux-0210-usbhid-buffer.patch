@@ -1,0 +1,12 @@
+diff -Naur linux-custom/drivers/hid/hid-input.c linux-custom.mod/drivers/hid/hid-input.c
+--- linux-custom/drivers/hid/hid-input.c	2018-01-29 09:39:20.000000000 +0100
++++ linux-custom.mod/drivers/hid/hid-input.c	2019-08-23 09:12:27.980737445 +0200
+@@ -1023,6 +1023,8 @@
+ 			input_set_events_per_packet(input, 60);
+ 	}
+ 
++	input_set_events_per_packet(input, 60);
++
+ 	if (usage->type == EV_ABS &&
+ 	    (usage->hat_min < usage->hat_max || usage->hat_dir)) {
+ 		int i;

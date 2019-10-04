@@ -1,0 +1,14 @@
+diff -Naur linux-custom.orig/arch/arm/boot/dts/imx6qdl-phytec-mira.dtsi linux-custom/arch/arm/boot/dts/imx6qdl-phytec-mira.dtsi
+--- linux-custom.orig/arch/arm/boot/dts/imx6qdl-phytec-mira.dtsi	2018-01-29 09:39:20.000000000 +0100
++++ linux-custom/arch/arm/boot/dts/imx6qdl-phytec-mira.dtsi	2019-05-28 09:08:35.641047460 +0200
+@@ -516,8 +516,8 @@
+ 	status = "disabled";
+ 
+ 	lvds-channel@0 {
+-		fsl,data-mapping = "spwg";
+-		fsl,data-width = <18>;
++		fsl,data-mapping = "jeida";
++		fsl,data-width = <24>;
+ 		status = "disabled";
+ 
+ 		display-timings {

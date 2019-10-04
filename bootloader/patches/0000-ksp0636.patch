@@ -1,0 +1,192 @@
+diff -Naur barebox-2016.11.0-phy7/arch/arm/boards/phytec-som-imx6/lowlevel.c barebox-2016.11.0-phy7-mod/arch/arm/boards/phytec-som-imx6/lowlevel.c
+--- barebox-2016.11.0-phy7/arch/arm/boards/phytec-som-imx6/lowlevel.c	2018-01-30 14:15:31.000000000 +0100
++++ barebox-2016.11.0-phy7-mod/arch/arm/boards/phytec-som-imx6/lowlevel.c	2018-12-05 08:03:36.889797218 +0100
+@@ -109,6 +109,7 @@
+ PHYTEC_ENTRY(start_phytec_phycore_imx6dl_som_emmc_1gib, imx6dl_phytec_phycore_som_emmc, SZ_1G, true);
+ PHYTEC_ENTRY(start_phytec_phycore_imx6q_som_nand_512mb, imx6q_phytec_phycore_som_nand, SZ_512M, true);
+ PHYTEC_ENTRY(start_phytec_phycore_imx6q_som_nand_1gib, imx6q_phytec_phycore_som_nand, SZ_1G, true);
++PHYTEC_ENTRY(start_phytec_phycore_imx6q_ksp0636_1gib, imx6q_phytec_phycore_ksp0636, SZ_1G, true);
+ PHYTEC_ENTRY(start_phytec_phycore_imx6qp_som_nand_1gib, imx6qp_phytec_phycore_som_nand, SZ_1G, true);
+ PHYTEC_ENTRY(start_phytec_phycore_imx6q_som_emmc_1gib, imx6q_phytec_phycore_som_emmc, SZ_1G, true);
+ PHYTEC_ENTRY(start_phytec_phycore_imx6q_som_emmc_2gib, imx6q_phytec_phycore_som_emmc, SZ_2G, true);
+diff -Naur barebox-2016.11.0-phy7/arch/arm/dts/imx6q-phytec-phycore-ksp0636.dts barebox-2016.11.0-phy7-mod/arch/arm/dts/imx6q-phytec-phycore-ksp0636.dts
+--- barebox-2016.11.0-phy7/arch/arm/dts/imx6q-phytec-phycore-ksp0636.dts	1970-01-01 01:00:00.000000000 +0100
++++ barebox-2016.11.0-phy7-mod/arch/arm/dts/imx6q-phytec-phycore-ksp0636.dts	2018-12-05 08:08:47.696913048 +0100
+@@ -0,0 +1,150 @@
++/*
++ * Copyright 2015 Christian Hemp, Phytec Messtechnik GmbH
++ *
++ * The code contained herein is licensed under the GNU General Public
++ * License. You may obtain a copy of the GNU General Public License
++ * Version 2 or later at the following locations:
++ *
++ * http://www.opensource.org/licenses/gpl-license.html
++ * http://www.gnu.org/copyleft/gpl.html
++ */
++
++/dts-v1/;
++
++#include <arm/imx6q.dtsi>
++#include "imx6q.dtsi"
++#include "imx6qdl-phytec-phycore-som.dtsi"
++
++/ {
++	model = "Phytec phyCORE-i.MX6 Quad KSP0636";
++	compatible = "phytec,imx6q-ksp0636", "phytec,imx6q-pcm058-nand", "fsl,imx6q";
++
++	regulators {
++		compatible = "simple-bus";
++		#address-cells = <1>;
++		#size-cells = <0>;
++		reg_usb_h1_vbus: regulator@0 {
++			pinctrl-names = "default";
++			pinctrl-0 = <&pinctrl_usbh1_vbus>;
++			compatible = "regulator-fixed";
++			reg = <0>;
++			regulator-name = "usb_h1_vbus";
++			regulator-min-microvolt = <5000000>;
++			regulator-max-microvolt = <5000000>;
++			gpio = <&gpio2 18 0>;
++			enable-active-high;
++		};
++
++		reg_usbotg_vbus: regulator@1 {
++			pinctrl-names = "default";
++			pinctrl-0 = <&pinctrl_usbotg_vbus>;
++			compatible = "regulator-fixed";
++			reg = <1>;
++			regulator-name = "usb_otg_vbus";
++			regulator-min-microvolt = <5000000>;
++			regulator-max-microvolt = <5000000>;
++			gpio = <&gpio2 19 0>;
++			enable-active-high;
++		};
++	};
++};
++
++&ecspi1 {
++	status = "okay";
++};
++
++&eeprom {
++	status = "okay";
++};
++
++&fec {
++	status = "okay";
++	phy-handle = <&ethphy>;
++	phy-mode = "rgmii";
++	phy-reset-gpios = <&gpio1 14 1>;
++
++	mdio {
++		#address-cells = <1>;
++		#size-cells = <0>;
++
++		ethphy: ethernet-phy@3 {
++			reg = <3>;
++			max-speed = <100>;
++		};
++	};
++};
++
++&flash {
++	status = "okay";
++};
++
++&gpmi {
++	status = "okay";
++};
++
++&iomuxc {
++	pinctrl-names = "default";
++
++	imx6q-phytec-ksp0636 {
++		pinctrl_usbh1: usbh1grp {
++			fsl,pins = <
++				MX6QDL_PAD_EIM_EB1__GPIO2_IO29		0x80000000
++			>;
++		};
++
++		pinctrl_usbh1_vbus: usbh1-vbusgrp {
++			fsl,pins = <
++				MX6QDL_PAD_EIM_A20__GPIO2_IO18		0x80000000
++			>;
++		};
++
++		pinctrl_usbotg: usbotggrp {
++			fsl,pins = <
++				MX6QDL_PAD_GPIO_1__USB_OTG_ID		0x17059
++				MX6QDL_PAD_EIM_DA8__GPIO3_IO08		0x80000000
++			>;
++		};
++
++		pinctrl_usbotg_vbus: usbotg-vbusgrp {
++			fsl,pins = <
++				MX6QDL_PAD_EIM_A19__GPIO2_IO19		0x80000000
++			>;
++		};
++	};
++};
++
++&usbh1 {
++	vbus-supply = <&reg_usb_h1_vbus>;
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_usbh1>;
++	disable-over-current;
++	status = "okay";
++};
++
++&usbotg {
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_usbotg>;
++	vbus-supply = <&reg_usbotg_vbus>;
++	disable-over-current;
++	dr_mode = "host";
++	status = "okay";
++};
++
++
++
++&usdhc3 {
++	status = "okay";
++
++	#address-cells = <1>;
++	#size-cells = <1>;
++
++	partition@0 {
++		label = "barebox";
++		reg = <0x0 0x80000>;
++	};
++
++	partition@1 {
++		label = "barebox-environment";
++		reg = <0x80000 0x80000>;
++	};
++};
+\ No newline at end of file
+diff -Naur barebox-2016.11.0-phy7/arch/arm/dts/Makefile barebox-2016.11.0-phy7-mod/arch/arm/dts/Makefile
+--- barebox-2016.11.0-phy7/arch/arm/dts/Makefile	2018-01-30 14:15:31.000000000 +0100
++++ barebox-2016.11.0-phy7-mod/arch/arm/dts/Makefile	2018-12-05 07:55:40.069290202 +0100
+@@ -50,6 +50,7 @@
+ 				imx6dl-phytec-phyboard-subra.dtb.o \
+ 				imx6q-phytec-phycore-som-nand.dtb.o \
+ 				imx6q-phytec-phycore-som-emmc.dtb.o \
++				imx6q-phytec-phycore-ksp0636.dtb.o \
+ 				imx6qp-phytec-phycore-som-nand.dtb.o \
+ 				imx6dl-phytec-phycore-som-nand.dtb.o \
+ 				imx6dl-phytec-phycore-som-emmc.dtb.o \
+diff -Naur barebox-2016.11.0-phy7/images/Makefile.imx barebox-2016.11.0-phy7-mod/images/Makefile.imx
+--- barebox-2016.11.0-phy7/images/Makefile.imx	2018-01-30 14:15:31.000000000 +0100
++++ barebox-2016.11.0-phy7-mod/images/Makefile.imx	2018-12-05 07:57:41.823376900 +0100
+@@ -379,6 +379,11 @@
+ FILE_barebox-phytec-phycore-imx6q-som-nand-1gib.img = start_phytec_phycore_imx6q_som_nand_1gib.pblx.imximg
+ image-$(CONFIG_MACH_PHYTEC_SOM_IMX6) += barebox-phytec-phycore-imx6q-som-nand-1gib.img
+ 
++pblx-$(CONFIG_MACH_PHYTEC_SOM_IMX6) += start_phytec_phycore_imx6q_ksp0636_1gib
++CFG_start_phytec_phycore_imx6q_ksp0636_1gib.pblx.imximg = $(board)/phytec-som-imx6/flash-header-phytec-pcm058-1gib.imxcfg
++FILE_barebox-phytec-phycore-imx6q-ksp0636-1gib.img = start_phytec_phycore_imx6q_ksp0636_1gib.pblx.imximg
++image-$(CONFIG_MACH_PHYTEC_SOM_IMX6) += barebox-phytec-phycore-imx6q-ksp0636-1gib.img
++
+ pblx-$(CONFIG_MACH_PHYTEC_SOM_IMX6) += start_phytec_phycore_imx6qp_som_nand_1gib
+ CFG_start_phytec_phycore_imx6qp_som_nand_1gib.pblx.imximg = $(board)/phytec-som-imx6/flash-header-phytec-pcm058qp-1gib.imxcfg
+ FILE_barebox-phytec-phycore-imx6qp-som-nand-1gib.img = start_phytec_phycore_imx6qp_som_nand_1gib.pblx.imximg
