@@ -15,6 +15,8 @@ The build process has been tested with Ubuntu 18.04. On Ubuntu 18.04 you must in
 
 You need at least 30 GB free disk space.
 
+This git repository uses [Git LFS](https://git-lfs.github.com/). Before cloning this repository, you must install the git lfs extension. An installation guide is [here](https://git-lfs.github.com/). The download as zip does not work, because all the large files are missing.
+
 ## Build
 Clone this repository and type `make` in the root of the repository.
 The build process can last several hours.
