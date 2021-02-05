@@ -35,6 +35,10 @@ else
     iptables -A INPUT  -p tcp -i $PORT --sport 80 -m state --state ESTABLISHED     -j ACCEPT
     iptables -A OUTPUT -p tcp -o $PORT --dport 80 -m state --state NEW,ESTABLISHED -j ACCEPT
 
+    #Alow incoming http connections (port 80)
+    iptables -A INPUT  -p tcp -i $PORT --dport 80 -m state --state NEW,ESTABLISHED -j ACCEPT
+    iptables -A OUTPUT -p tcp -o $PORT --sport 80 -m state --state NEW,ESTABLISHED -j ACCEPT
+
     #Alow outgoing https connections (port 443)
     iptables -A INPUT  -p tcp -i $PORT --sport 443 -m state --state ESTABLISHED     -j ACCEPT
     iptables -A OUTPUT -p tcp -o $PORT --dport 443 -m state --state NEW,ESTABLISHED -j ACCEPT
